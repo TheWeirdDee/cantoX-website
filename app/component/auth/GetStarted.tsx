@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signIn } from "@/app/lib/wedding-store";
 
 const CAROUSEL_SLIDES = [
   {
@@ -32,6 +33,12 @@ const CAROUSEL_SLIDES = [
 export default function GetStarted() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const router = useRouter();
+
+  // Dummy sign-in until the real auth step exists: remember the user, open the dashboard
+  const enterDashboard = (email: string, name?: string) => {
+    signIn(email, name);
+    router.push("/dashboard/templates");
+  };
 
   useEffect(() => {
     const slideInterval = setInterval(() => {
@@ -87,7 +94,10 @@ export default function GetStarted() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    // TODO: move to next authentication step
+                    const email = new FormData(e.currentTarget).get("email");
+                    if (typeof email === "string" && email.trim()) {
+                      enterDashboard(email.trim());
+                    }
                   }}
                   className="space-y-3"
                 >
@@ -155,6 +165,7 @@ export default function GetStarted() {
                 {/* Google */}
                 <button
                   type="button"
+                  onClick={() => enterDashboard("precious.a@canto.app", "Precious A.")}
                   className="
                     flex
                     h-10
@@ -183,6 +194,7 @@ export default function GetStarted() {
                 {/* Apple */}
                 <button
                   type="button"
+                  onClick={() => enterDashboard("precious.a@canto.app", "Precious A.")}
                   className="
                     mt-2
                     flex

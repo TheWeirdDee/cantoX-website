@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import Button from "../common/Button";
+import { signOut } from "@/app/lib/wedding-store";
 
 const navLinks = [
   { name: "About Us", href: "/about" },
@@ -31,6 +32,12 @@ export default function Navbar() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // The dashboard is its own app: visiting the public site ends the session,
+  // so the next dashboard visit asks for login again
+  useEffect(() => {
+    signOut();
   }, []);
 
   // Close the mobile menu whenever the route changes
